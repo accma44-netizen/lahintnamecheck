@@ -1,0 +1,69 @@
+{
+  "version": "2025-09-20",
+  "normalize_arabic": true,
+  "reject_on_match": true,
+  "similarity": {
+    "method": "levenshtein",
+    "threshold_short": 1,
+    "threshold_medium": 2,
+    "threshold_long": 3
+  },
+  "rules": [
+    { "id": "arabic_only", "type": "charset_allow_only", "allow": ["arabic_letters","space"], "message": "الاسم يجب أن يكون بالعربية فقط دون خلط أجنبي." },
+    { "id": "no_digits_or_symbols", "type": "regex_forbid", "pattern": "[0-9@#$%^&*()_+\\-=\\[\\]{};:\\\"'\\\\|,<>\\./?]", "message": "يجب ألا يحتوي الاسم على أرقام أو رموز خاصة." },
+    { "id": "max_words", "type": "max_words", "value": 3, "message": "لا يزيد الاسم على ثلاث كلمات." },
+
+    { "id": "no_legal_entity_prefix", "type": "forbid_prefix",
+      "list": ["شركة","مؤسسة","مجموعة","قابضة","مكتب","اتحاد","نقابة","جمعية"],
+      "message": "يمنع بدء الاسم بكيان قانوني."
+    },
+
+    { "id": "banned_titles", "type": "forbid_contains_any",
+      "list": ["دكتور","دكتورة","مهندس","محامي","قاضي","وزير"],
+      "message": "يمنع استخدام ألقاب مهنية."
+    },
+    { "id": "banned_royal", "type": "forbid_contains_any",
+      "list": ["ملك","ملكة","أمير","أميرة","سمو","صاحب السمو","خادم الحرمين","ولي العهد"],
+      "message": "يمنع استخدام ألقاب ملكية."
+    },
+    { "id": "banned_military", "type": "forbid_contains_any",
+      "list": ["لواء","فريق","عميد","عقيد","مقدم","رائد","نقيب","ملازم","جندي","حرس"],
+      "message": "يمنع استخدام رتب عسكرية."
+    },
+
+    { "id": "banned_gov_entities", "type": "forbid_contains_any",
+      "list": ["وزارة","هيئة","أمانة","بلدية","مجلس الوزراء","الديوان","نيوم","الحرس"],
+      "message": "يمنع استخدام أسماء جهات حكومية."
+    },
+    { "id": "banned_platforms", "type": "forbid_contains_any",
+      "list": ["توكلنا","أبشر","رؤية 2030","رؤية2030","قوى","مدد","نفاذ"],
+      "message": "يمنع استخدام أسماء منصات حكومية."
+    },
+    { "id": "banned_religion", "type": "forbid_contains_any",
+      "list": ["الله","الرحمن","الرحيم","الجنة","النار","البلد الامن","البلد الآمن","الأرض المقدسة","الارض المقدسة","الكعبة","قرآن","الرسول"],
+      "message": "يمنع استخدام ألفاظ جلاله أو معانٍ دينية."
+    },
+    { "id": "banned_country_city", "type": "forbid_contains_any",
+      "list": ["سعودي","سعودية","السعودي","السعودية","مكة","المدينة"],
+      "message": "يمنع استخدام كلمات تحدد بلد/مدينة."
+    },
+
+    { "id": "banned_activity_hints", "type": "forbid_contains_any",
+      "list": ["الطبي","الرياضي","السياحي","للسياحة","العقاري","التجاري","الصناعي"],
+      "message": "يمنع تضمين مقطع يدل على نشاط."
+    },
+    { "id": "banned_words_generic", "type": "forbid_contains_any",
+      "list": ["رسمي","معتمد"],
+      "message": "يمنع استخدام وصف يوحي بالرسمية/الاعتماد."
+    },
+
+    { "id": "no_diacritics", "type": "regex_forbid", "pattern": "[\\u064B-\\u0652\\u0670]", "message": "يجب أن يكون الاسم خاليًا من حركات التشكيل." },
+    { "id": "no_mix_ar_en", "type": "regex_forbid", "pattern": "[A-Za-z]", "message": "يمنع خلط العربية مع الإنجليزية داخل الاسم." },
+
+    { "id": "no_personal_full_name_heuristic", "type": "heuristic_personal_name",
+      "first_names_sample": ["فهد","محمد","عبدالله","أحمد","سعيد","حمد","عبدالعزيز","خالد","سلمان","تركي","نورة","سارة","ريم"],
+      "clues_second_word": ["المطيري","القحطاني","الشهراني","العتيبي","الزهراني","الأنصاري","الشريف","العنزي","الحربي","الرشيدي","الغامدي","الشمراني","التميمي","الهاجري","آل"],
+      "message": "لا يقبل اسم شخصي ثنائي (اسم + عائلة)."
+    }
+  ]
+}
