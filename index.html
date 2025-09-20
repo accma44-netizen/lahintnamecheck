@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,358 +5,177 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>مساعد لاهنت الذكي — تقييم الاسم التجاري</title>
 <style>
-  :root{
-    --lahint:#0ea89b;
-    --ink:#222;
-    --ink-2:#555;
-    --bg:#f7f9fb;
-    --card:#ffffff;
-    --ok:#1c9c50;
-    --bad:#e23b3b;
-    --warn:#c58b00;
-    --muted:#9aa2b1;
-    --shadow:0 10px 25px rgba(0,0,0,.06);
-    --radius:14px;
-  }
-  *,*:before,*:after{box-sizing:border-box}
-  body{
-    margin:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", "Cairo", "Tajawal", "Noto Sans Arabic", sans-serif;
-  }
-  .wrap{
-    max-width:1100px; margin:32px auto; padding: 20px;
-  }
-  .brand{
-    text-align:center; margin: 12px 0 24px;
-  }
-  .logo{
-    display:inline-flex; align-items:center; gap:14px; user-select:none;
-  }
-  .logo-mark{
-    width:78px; height:78px; border-radius:999px; background: radial-gradient(circle at 30% 25%, #2dd4bf, #0ea89b);
-    display:inline-grid; place-items:center; color:white; font-weight:800; font-size:26px; box-shadow: var(--shadow);
-  }
-  .logo-text{
-    font-weight:800; font-size:34px; letter-spacing:.4px; color:var(--ink);
-  }
-  .sub{ color:var(--ink-2); font-size:22px; margin-top:6px; }
-  .card{
-    background:var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 18px; margin-top: 8px;
-  }
-  .row{ display:flex; gap:10px; }
-  input[type=text]{
-    flex:1; padding: 16px 18px; font-size:18px; border-radius:12px; border: 1px solid #e2e8f0; outline:none;
-  }
-  input[type=text]:focus{ border-color: var(--lahint); box-shadow: 0 0 0 3px rgba(14,168,155,.12); }
-  .btn{
-    width:44px; height:44px; border-radius:999px; border:0; background:#22c55e; color:white; font-size:20px; display:grid; place-items:center;
-    cursor:pointer; box-shadow: var(--shadow);
-  }
-  .btn:disabled{ background:#b7dbc5; cursor:not-allowed; }
-  .hr{ height:1px; background:#eef2f7; margin:18px 0; }
-  .loading{
-    display:none; gap:14px; align-items:center; color:var(--ink-2);
-  }
-  .ring{
-    width:26px; height:26px; border-radius:999px; border:3px solid #94e2db; border-top-color: var(--lahint);
-    animation:spin 1s linear infinite;
-  }
-  @keyframes spin{ to{ transform: rotate(-360deg); } }
-  .state{ display:inline-flex; align-items:center; gap:8px; font-weight:700; }
-  .state.ok{ color:var(--ok);}
-  .state.bad{ color:var(--bad);}
-  .badge{ background:#eaf6f3; color:var(--lahint); border-radius:666px; padding: 6px 12px; font-weight:700; font-size:13px;}
-  .muted{ color:var(--muted);}
-  .result h3{ margin:0 0 8px; font-size:22px }
-  .result p{ margin:6px 0; line-height:1.8 }
-  .bullets{ list-style: none; padding:0; margin:6px 0 0 }
-  .bullets li{ display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed #eef2f7; }
-  .dot{ width:12px; height:12px; border-radius:999px; display:inline-block }
-  .dot.ok{ background: var(--ok); }
-  .dot.bad{ background: var(--bad); }
-  .dot.warn{ background: var(--warn); }
-  .small{ font-size:13px; }
-  .footer{ color:var(--muted); font-size:13px; margin-top:14px }
-  .hint{ font-size:13px; color:var(--ink-2); }
+  :root{--lahint:#0ea89b;--ink:#0f172a;--ink-2:#334155;--bg:#f7f9fb;--ok:#16a34a;--bad:#dc2626;--warn:#c58b00;--muted:#94a3b8;--shadow:0 10px 30px rgba(2,21,38,.08);--radius:16px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Kufi Arabic","Cairo","Tajawal","Noto Sans Arabic",sans-serif}
+  .shell{max-width:1200px;margin:24px auto;padding:0 16px}
+  .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .brand{display:flex;gap:14px;align-items:center}
+  .brand img{width:72px;height:72px;object-fit:contain}
+  .brand .t .title{font-size:26px;font-weight:800}
+  .brand .t .sub{color:var(--ink-2);margin-top:4px}
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+  .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow)}
+  .box{padding:16px}
+  .kpi{display:flex;align-items:center;justify-content:space-between;padding:14px;border-radius:12px;background:#f8fafc;border:1px solid #eef2f7;margin-bottom:10px}
+  .kpi .num{font-weight:800;font-size:18px;background:#eaf6f3;color:#0f172a;border-radius:999px;padding:6px 10px}
+  .panel .head{padding:14px;border-bottom:1px solid #eef2f7;display:flex;align-items:center;justify-content:space-between}
+  .panel .body{padding:16px}
+  .input{display:flex;gap:8px;align-items:center}
+  .input input{flex:1;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px}
+  .input input:focus{outline:none;border-color:var(--lahint);box-shadow:0 0 0 3px rgba(14,168,155,.12)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;padding:12px 14px;background:var(--lahint);color:#fff;cursor:pointer;box-shadow:var(--shadow)}
+  .btn.secondary{background:#e2e8f0;color:#0f172a}
+  .hint{font-size:12px;color:var(--muted)}
+  .loading{display:none;gap:10px;align-items:center;color:var(--ink-2);padding:10px 0}
+  .ring{width:22px;height:22px;border-radius:999px;border:3px solid #94e2db;border-top-color:var(--lahint);animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(-360deg)}}
+  .result{display:none}
+  .state{display:inline-flex;align-items:center;gap:8px;font-weight:800}
+  .state.ok{color:var(--ok)} .state.bad{color:var(--bad)}
+  .dot{width:12px;height:12px;border-radius:999px;display:inline-block}
+  .dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.warn{background:var(--warn)}
+  .badge{background:#eaf6f3;color:var(--lahint);border-radius:999px;padding:4px 10px;font-weight:700}
+  .list{list-style:none;padding:0;margin:8px 0 0}
+  .list li{display:flex;gap:8px;padding:8px 0;border-bottom:1px dashed #eef2f7;align-items:flex-start}
+  .pill{display:inline-block;background:#eaf6f3;border:1px solid #a7e2da;border-radius:999px;padding:6px 10px;font-size:13px;margin-inline-end:6px;cursor:pointer}
+  .hr{height:1px;background:#eef2f7;margin:12px 0}
+  .cfg{display:none;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:12px;padding:10px;margin-top:8px}
+  .toggle{appearance:none;width:42px;height:24px;border-radius:999px;background:#e2e8f0;position:relative;outline:none;cursor:pointer}
+  .toggle:checked{background:#86efac}
+  .toggle:before{content:"";position:absolute;width:18px;height:18px;border-radius:999px;background:#fff;top:3px;right:3px;transition:.2s}
+  .toggle:checked:before{right:21px}
+  @media (max-width:960px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="brand">
-      <div class="logo">
-        <div class="logo-mark">L</div>
-        <div class="logo-text">Lahint</div>
+  <div class="shell">
+    <div class="header">
+      <div class="brand">
+        <img src="logo.png" alt="Lahint logo"/>
+        <div class="t">
+          <div class="title">لاهنت — المساعد الذكي لتقييم الاسم التجاري</div>
+          <div class="sub">تحقق تلقائي + اقتراح بدائل + فحص التكرار</div>
+        </div>
       </div>
-      <div class="sub">مساعد لاهنت الذكي — تقييم الاسم التجاري</div>
+      <button class="btn secondary" id="btnCfg">⚙️ الإعدادات</button>
     </div>
 
-    <div class="card">
-      <label class="hint" for="name">الاسم المقترح:</label>
-      <div class="row" style="margin-top:6px">
-        <input id="name" type="text" placeholder="أدخل الاسم التجاري..." />
-        <button id="go" class="btn" title="تحقق">←</button>
-      </div>
-      <div id="loading" class="loading" style="margin-top:12px">
-        <div class="ring"></div>
-        <div>المساعد الذكي يتحقق حاليًا من الاسم...</div>
-      </div>
-      <div class="hr"></div>
+    <div class="grid">
+      <div class="card"><div class="box">
+        <div class="kpi"><b>عدد الأسماء في القاعدة</b><span class="num" id="kTotal">—</span></div>
+        <div class="kpi"><b>الأسماء المحجوزة</b><span class="num" id="kReserved">—</span></div>
+        <div class="kpi"><b>العلامات التجارية</b><span class="num" id="kTrademarks">—</span></div>
+        <div class="kpi"><b>الملفات المحمّلة</b><span class="num" id="kFiles">—</span></div>
+        <div class="hr"></div>
+        <div class="hint">العدادات تتحدّث بعد تحميل البيانات. القرار النهائي لدى الجهات الحكومية.</div>
+      </div></div>
 
-      <div id="result" class="result"></div>
-    </div>
+      <div class="card panel">
+        <div class="head">
+          <h3>التحقق من الأهلية</h3>
+          <label class="hint"><input class="toggle" type="checkbox" id="aiToggle"> تفعيل الذكاء الاصطناعي للاقتراحات</label>
+        </div>
+        <div class="body">
+          <div class="input">
+            <input id="name" type="text" placeholder="اكتب الاسم المقترح (حتى 3 كلمات)">
+            <button id="go" class="btn">تحقق الآن</button>
+          </div>
+          <div class="loading" id="loading"><div class="ring"></div><div>المساعد الذكي يتحقق حاليًا من الاسم…</div></div>
 
-    <div class="footer">
-      هذا النموذج أولي للعرض والاختبار. القرار النهائي لدى الجهات الحكومية. 
+          <div class="result" id="result">
+            <div id="rsState"></div>
+            <div class="hr"></div>
+            <div><b>تفسير النتيجة:</b> <span id="rsExplain" class="hint"></span></div>
+            <div class="hr"></div>
+            <ul class="list">
+              <li><span class="dot" id="d1"></span><div><b>العلامات التجارية:</b> <span id="tmTxt" class="hint"></span><div id="tmList" class="hint"></div></div></li>
+              <li><span class="dot" id="d2"></span><div><b>الأسماء المحجوزة:</b> <span id="rvTxt" class="hint"></span><div id="rvList" class="hint"></div></div></li>
+            </ul>
+            <div class="hr"></div>
+            <div><b>اقتراحات بديلة:</b></div>
+            <div id="alt"></div>
+          </div>
+
+          <div class="cfg" id="cfg">
+            <div class="hint">سيتم تحميل names_index.json أو registry_names.json، وإذا لم يوجدا سيتم البحث عن part*.json و part*_split_*.json تلقائيًا.</div>
+            <div class="hint" style="margin-top:6px">يمكنك وضع مفتاح OpenAI لتفعيل الاقتراحات بالذكاء الاصطناعي.</div>
+            <div class="input" style="margin-top:8px"><input id="apiKey" type="text" placeholder="OPENAI_API_KEY (اختياري)"><button id="saveKey" class="btn secondary">حفظ</button></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
 <script>
-// ---------- Arabic normalization like backend ----------
-function normalizeArabic(s){
-  if(!s) return "";
-  s = s.toString();
-  // remove diacritics
-  s = s.replace(/[\u0617-\u061A\u064B-\u0652\u0657-\u065F\u0670\u06D6-\u06ED]/g,"");
-  // normalize
-  s = s.replace(/[إأٱآا]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/ئ/g,"ي").replace(/ؤ/g,"و").replace(/ـ/g,"");
-  // keep spaces + arabic letters + digits
-  s = s.replace(/[^0-9\u0621-\u063A\u0641-\u064A\s]/g," ");
-  // collapse spaces
-  s = s.replace(/\s+/g," ").trim();
-  return s;
-}
-// ---------- Banned / rules lists ----------
-const bannedPrefixes = ["شركة","مؤسسة","مجموعة","قابضة","مكتب","اتحاد","نقابة","جمعية"];
-const bannedTitles = ["دكتور","دكتورة","مهندس","محامي","قاضي","وزير","سعادة","معالي"];
-const bannedRoyal = ["ملك","أمير","سمو","خادم الحرمين","ولي العهد","صاحب السمو"];
-const bannedMilitary = ["لواء","فريق","عميد","عقيد","مقدم","رائد","نقيب","ملازم","جندي","حرس"];
-const bannedGov = ["وزارة","هيئة","أمانة","بلدية","نيوم","الديوان","مجلس الوزراء","الحرس"];
-const bannedPlatforms = ["توكلنا","أبشر","رؤية 2030","قوى","مدد"];
-const bannedReligion = ["الله","الرحمن","الجنة","البلد الامن","الأرض المقدسة","الارض المقدسه","الارض المقدسة","البلد الآمن","البلد الامن","قرآن","الرسول","الكعبة"];
-const bannedCountryWords = ["سعودي","سعودية","السعودي","السعودية","مكة","المدينة"];
-const bannedActivityHints = ["الطبي","الرياضي","للسياحة"];
-const bannedWords = ["رسمي","معتمد"];
-const maxWords = 3;
+function normalizeArabic(s){if(!s)return"";s=s.toString();s=s.replace(/[\u0617-\u061A\u064B-\u0652\u0657-\u065F\u0670\u06D6-\u06ED]/g,"");s=s.replace(/[إأٱآا]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/ئ/g,"ي").replace(/ؤ/g,"و").replace(/ـ/g,"");s=s.replace(/[^0-9\u0621-\u063A\u0641-\u064A\s]/g," ");s=s.replace(/\s+/g," ").trim();return s}
+function escapeHtml(s){return(s??"").toString().replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#039;"}[m]))}
 
-// ---------- UI ----------
-const el = {
-  name: document.getElementById('name'),
-  go: document.getElementById('go'),
-  loading: document.getElementById('loading'),
-  result: document.getElementById('result')
-};
+const bannedPrefixes=["شركة","مؤسسة","مجموعة","قابضة","مكتب","اتحاد","نقابة","جمعية"];
+const bannedTitles=["دكتور","دكتورة","مهندس","محامي","قاضي","وزير","مستشار"];
+const bannedRoyal=["ملك","ملكة","أمير","أميرة","سمو","صاحب السمو","ولي العهد","خادم الحرمين"];
+const bannedMilitary=["لواء","فريق","عميد","عقيد","مقدم","رائد","نقيب","ملازم","جندي","حرس"];
+const bannedGov=["وزارة","هيئة","أمانة","بلدية","الديوان","مجلس الوزراء","نيوم","الحرس"];
+const bannedPlatforms=["توكلنا","أبشر","رؤية 2030","قوى","مدد","نفاذ"];
+const bannedReligion=["الله","الرحمن","الرحيم","الجنة","النار","الكعبة","قرآن","الرسول","الأرض المقدسة","البلد الامن","البلد الآمن"];
+const bannedCountry=["سعودي","سعودية","السعودي","السعودية","مكة","المدينة"];
+const bannedActivity=["الطبي","الرياضي","السياحي","للسياحة","العقاري","الصناعي","التجاري"];
+const bannedWords=["رسمي","معتمد"];
+const maxWords=3;
 
-// ---------- Dataset loading ----------
-let DATA = []; // {name_normalized, name_original, source, subsource}
-let INDEX = new Map(); // normalized -> [records]
-let FIRST_LETTER = new Map();
-
-async function loadData(){
-  try{
-    const r = await fetch('names_index.json');
-    if(!r.ok) throw new Error("fetch failed");
-    DATA = await r.json();
-  }catch(e){
-    // minimal demo data as fallback
-    DATA = [
-      {"name_normalized":"اساس","name_original":"أساس","source":"reserved_trade_name","subsource":"demo"},
-      {"name_normalized":"تابع المواسم","name_original":"تابع المواسم","source":"reserved_trade_name","subsource":"demo"},
-    ];
-  }
-  for(const rec of DATA){
-    const k = rec.name_normalized;
-    if(!INDEX.has(k)) INDEX.set(k, []);
-    INDEX.get(k).push(rec);
-    const first = k[0] || "";
-    if(!FIRST_LETTER.has(first)) FIRST_LETTER.set(first, []);
-    FIRST_LETTER.get(first).push(rec);
-  }
+let DATA=[],INDEX=new Map(),FIRST=new Map(),COUNTS={total:0,trademark:0,reserved:0,files:0};
+function addRecord(r){const k=r.name_normalized;if(!k)return;if(!INDEX.has(k))INDEX.set(k,[]);INDEX.get(k).push(r);const f=k[0]||"";if(!FIRST.has(f))FIRST.set(f,[]);FIRST.get(f).push(r);DATA.push(r)}
+async function tryLoad(url){try{const r=await fetch(url,{cache:"no-store"});if(!r.ok)return false;const d=await r.json();if(!Array.isArray(d))return false;d.forEach(addRecord);COUNTS.files++;return true}catch(e){return false}}
+async function loadData(){DATA.length=0;INDEX.clear();FIRST.clear();COUNTS={total:0,trademark:0,reserved:0,files:0};
+ if(await tryLoad("names_index.json")){}else if(await tryLoad("registry_names.json")){}else{
+  for(let i=1;i<=30;i++){await tryLoad(`part${i}.json`);for(let s=1;s<=12;s++){await tryLoad(`part${i}_split_${s}.json`)}}}
+ COUNTS.total=DATA.length;COUNTS.trademark=DATA.filter(x=>x.source==="trademark").length;COUNTS.reserved=DATA.filter(x=>x.source!=="trademark").length;
+ document.getElementById("kTotal").textContent=COUNTS.total.toLocaleString("ar-SA");
+ document.getElementById("kTrademarks").textContent=COUNTS.trademark.toLocaleString("ar-SA");
+ document.getElementById("kReserved").textContent=COUNTS.reserved.toLocaleString("ar-SA");
+ document.getElementById("kFiles").textContent=COUNTS.files.toString();
 }
 loadData();
 
-// ---------- Levenshtein ----------
-function levenshtein(a,b){
-  a = a || ""; b = b || "";
-  const m = a.length, n = b.length;
-  if (m === 0) return n;
-  if (n === 0) return m;
-  const dp = new Array(n+1);
-  for(let j=0;j<=n;j++) dp[j]=j;
-  for(let i=1;i<=m;i++){
-    let prev = i-1;
-    dp[0] = i;
-    for(let j=1;j<=n;j++){
-      const temp = dp[j];
-      const cost = a[i-1] === b[j-1] ? 0 : 1;
-      dp[j] = Math.min(
-        dp[j] + 1,        // deletion
-        dp[j-1] + 1,      // insertion
-        prev + cost       // substitution
-      );
-      prev = temp;
-    }
-  }
-  return dp[n];
-}
+function levenshtein(a,b){a=a||"";b=b||"";const m=a.length,n=b.length;if(m===0)return n;if(n===0)return m;const dp=new Array(n+1);for(let j=0;j<=n;j++)dp[j]=j;for(let i=1;i<=m;i++){let p=i-1;dp[0]=i;for(let j=1;j<=n;j++){const t=dp[j],c=a[i-1]===b[j-1]?0:1;dp[j]=Math.min(dp[j]+1,dp[j-1]+1,p+c);p=t}}return dp[n]}
+function nearDup(q,c){const L=Math.max(q.length,c.length);const d=levenshtein(q,c);const thr=L<=4?1:(L<=7?2:3);return d<=thr}
 
-function nearDuplicate(q, candidate){
-  const L = Math.max(q.length, candidate.length);
-  const d = levenshtein(q, candidate);
-  const threshold = L <= 4 ? 1 : (L <= 7 ? 2 : 3);
-  return d <= threshold;
-}
-
-// ---------- Rules evaluation ----------
 function validateRules(name){
-  const original = name.trim();
-  const normalized = normalizeArabic(original);
-  const words = normalized ? normalized.split(/\s+/) : [];
-
-  // 1) Arabic only (after trimming)
-  if(!/^[\u0621-\u063A\u0641-\u064A\s]+$/.test(normalized)){
-    return { ok:false, reason:"الاسم يجب أن يكون بالعربية فقط دون رموز أو أرقام.", rule:"عربي فقط" };
-  }
-
-  if(words.length > maxWords){
-    return { ok:false, reason:"لا يزيد الاسم على ثلاث كلمات.", rule:"<= 3 كلمات" };
-  }
-
-  // Starts with legal entity word (e.g., "شركة")
-  for(const p of bannedPrefixes){
-    if(normalized.startsWith(p+" ")){
-      return { ok:false, reason:"يُمنع بدء الاسم بكيان قانوني مثل: "+p, rule:"البداية بكيان قانوني" };
-    }
-  }
-
-  // Titles / Ranks / Royal
-  for(const list of [bannedTitles, bannedRoyal, bannedMilitary]){
-    for(const k of list){
-      if(normalized.includes(k)){
-        return { ok:false, reason:"الاسم يحتوي كلمة محظورة: "+k, rule:"ألقاب/رتب/ملكية" };
-      }
-    }
-  }
-
-  // Government entities / platforms
-  for(const list of [bannedGov, bannedPlatforms]){
-    for(const k of list){
-      if(normalized.includes(k)){
-        return { ok:false, reason:"يحظر استخدام أسماء جهات/منصات حكومية: "+k, rule:"جهات حكومية" };
-      }
-    }
-  }
-
-  // Religion
-  for(const k of bannedReligion){
-    if(normalized.includes(k)){
-      return { ok:false, reason:"يحظر استخدام كلمات أو معانٍ دينية: "+k, rule:"محتوى ديني" };
-    }
-  }
-
-  // Country words
-  for(const k of bannedCountryWords){
-    if(normalized.includes(k)){
-      return { ok:false, reason:"يُمنع استخدام كلمة: "+k, rule:"تحديد بلد/مدينة" };
-    }
-  }
-
-  // Activity hints
-  for(const k of bannedActivityHints){
-    if(normalized.includes(k)){
-      return { ok:false, reason:"لا يتضمن الاسم مقطع يدل على نشاط تجاري: "+k, rule:"تلميح للنشاط" };
-    }
-  }
-
-  // Letters-only (no digits/specials) already enforced by normalization stage.
-  return { ok:true, reason:"" , normalized};
+  const norm=normalizeArabic(name), words=norm?norm.split(/\s+/):[];
+  if(!/^[\u0621-\u063A\u0641-\u064A\s]+$/.test(norm)) return {ok:false,reason:"الاسم يجب أن يكون بالعربية فقط دون أرقام أو رموز."};
+  if(words.length>maxWords) return {ok:false,reason:"الاسم لا يزيد على ثلاث كلمات."};
+  for(const p of bannedPrefixes){if(norm.startsWith(p+" "))return {ok:false,reason:"يمنع بدء الاسم بكيان قانوني («"+p+"»)."}}
+  for(const L of [bannedTitles,bannedRoyal,bannedMilitary]){for(const k of L){if(norm.includes(k))return {ok:false,reason:"يحتوي كلمة محظورة («"+k+"»)."}}}
+  for(const L of [bannedGov,bannedPlatforms]){for(const k of L){if(norm.includes(k))return {ok:false,reason:"يمنع استخدام أسماء جهات/منصات حكومية («"+k+"»)."}}}
+  for(const k of bannedReligion){if(norm.includes(k))return {ok:false,reason:"يمنع الألفاظ أو المعاني الدينية («"+k+"»)."}}
+  for(const k of bannedCountry){if(norm.includes(k))return {ok:false,reason:"يمنع كلمات البلد/المدينة («"+k+"»)."}}
+  for(const k of bannedActivity){if(norm.includes(k))return {ok:false,reason:"لا يتضمن الاسم مقطع يدل على نشاط («"+k+"»)."}}
+  for(const k of bannedWords){if(norm.includes(k))return {ok:false,reason:"يمنع استخدام ألفاظ توحي بالرسمية («"+k+"»)."}}
+  return {ok:true,normalized:norm};
 }
 
-// ---------- Search ----------
-function evaluate(){
-  const q = el.name.value || "";
-  if(!q.trim()) return;
-  el.result.innerHTML = "";
-  el.loading.style.display = "inline-flex";
-  setTimeout(() => {
-    const v = validateRules(q);
-    if(!v.ok){
-      render(false, "غير متوافق", v.reason, []);
-      el.loading.style.display = "none";
-      return;
-    }
-    const norm = v.normalized;
-    // exact
-    let hits = INDEX.get(norm) || [];
-
-    // near duplicates (same first letter bucket)
-    const bucket = (FIRST_LETTER.get(norm[0]) || []);
-    const near = [];
-    for(const rec of bucket){
-      if(rec.name_normalized === norm) continue;
-      if(nearDuplicate(norm, rec.name_normalized)){
-        near.push(rec);
-      }
-    }
-
-    const allHits = [...hits, ...near];
-    if(allHits.length){
-      render(false, "غير متوافق", "الاسم محجوز/مشابه لاسم محجوز أو علامة تجارية.", summarize(allHits));
-    }else{
-      render(true, "متوافق", "لا يوجد تطابق ظاهر في قواعد البيانات المتاحة. يمكن المتابعة لحجز الاسم.", []);
-    }
-    el.loading.style.display = "none";
-  }, 420); // simulated small delay while "logo" spins :)
+function getHits(norm){
+  const exact=INDEX.get(norm)||[];
+  const near=[]; const bucket=FIRST.get(norm[0])||[];
+  for(const r of bucket){if(r.name_normalized===norm)continue;if(nearDup(norm,r.name_normalized))near.push(r)}
+  return {exact,near,all:[...exact,...near]}
 }
 
-function summarize(hits){
-  // return up to 6 unique by normalized
-  const seen = new Set();
-  const items = [];
-  for(const h of hits){
-    if(seen.has(h.name_normalized)) continue;
-    seen.add(h.name_normalized);
-    items.push(h);
-    if(items.length >= 6) break;
-  }
-  return items;
-}
+const SAFE_WORDS=["مدى","محيط","نواة","محور","روافد","رونق","مورد","معين","منار","ركن","مرام","نور","نبراس","أثر","مبدأ","نبع","نبضة","وهج","جدوى","فكرة","قيمة","كيان","رابط","آفاق","واصل","بذرة"];
+function baseCandidates(core){const out=[];if(core.length>3)out.push(core.slice(0,-1));out.push(core+" مدى");out.push("محور "+core);out.push(core+" نواة");out.push("نبراس "+core);for(const w of SAFE_WORDS){out.push(core+" "+w);out.push(w+" "+core)}return Array.from(new Set(out))}
+function isAvailable(name,normQ){const v=validateRules(name);if(!v.ok)return false;const n=v.normalized;if(n===normQ)return false;if(INDEX.has(n))return false;for(const r of (FIRST.get(n[0])||[])){if(nearDup(n,r.name_normalized))return false}if(nearDup(n,normQ))return false;return true}
 
-// ---------- Render ----------
-function render(ok, title, explain, collisions){
-  const stateClass = ok ? "ok" : "bad";
-  const status = ok ? "متوافق" : "غير متوافق";
-  const collTrademarks = collisions.filter(x => x.source === "trademark");
-  const collReserved = collisions.filter(x => x.source === "reserved_trade_name");
+async function aiSuggest(q,count){const key=localStorage.getItem("OPENAI_API_KEY");if(!document.getElementById("aiToggle").checked||!key)return[];try{const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:"gpt-4o-mini",messages:[{role:"user",content:`اقترح ${count} اسمًا تجاريًا عربيًا مقبولًا وبدون ديني/ملكي/عسكري/حكومي/نشاط واضح وبحد أقصى 3 كلمات، مستوحى من: «${q}». أعد النتيجة مفصولة بفواصل عربية.`}],temperature:0.6})});if(!r.ok)return[];const j=await r.json();const t=j.choices?.[0]?.message?.content||"";return t.replace(/[\n\r]/g," ").split(/،|,/).map(s=>s.trim()).filter(Boolean).slice(0,count)}catch(e){return[]}}
 
-  el.result.innerHTML = `
-    <h3>نتيجة التقييم ل“<span class="badge">${escapeHtml(el.name.value.trim())}</span>”</h3>
-    <p class="state ${stateClass}"><span class="dot ${stateClass}"></span> <span>${status}</span></p>
-    <div class="small muted">تفسير النموذج:</div>
-    <p>${escapeHtml(explain)}</p>
-    <div class="small muted">نتائج التحقق من التكرار:</div>
-    <ul class="bullets">
-      <li><span class="dot ${collTrademarks.length ? 'bad' : 'ok'}"></span> العلامات التجارية: ${collTrademarks.length ? 'مسجَّلة' : 'غير مسجَّلة'}
-        ${collTrademarks.length ? '<div class="small muted">أبرز التعارضات: ' + collisionsToText(collTrademarks) + '</div>' : ''}
-      </li>
-      <li><span class="dot ${collReserved.length ? 'warn' : 'ok'}"></span> الأسماء المحجوزة: ${collReserved.length ? 'محجوزة' : 'غير محجوزة'}
-        ${collReserved.length ? '<div class="small muted">أبرز التعارضات: ' + collisionsToText(collReserved) + '</div>' : ''}
-      </li>
-    </ul>
-  `;
-}
+async function suggestAlternatives(q,allHits){const normQ=normalizeArabic(q);const core=normQ.replace(/^(شركة|مؤسسة|مجموعة|قابضة|مكتب)\s+/,"").trim();const cands=baseCandidates(core);const acc=[];for(const c of cands){if(acc.length>=3)break;if(isAvailable(c,normQ))acc.push(c)}if(acc.length<3){const ai=await aiSuggest(q,3-acc.length);for(const s of ai){if(acc.length>=3)break;if(isAvailable(s,normQ)&&!acc.includes(s))acc.push(s)}}while(acc.length<3){const w=SAFE_WORDS[Math.floor(Math.random()*SAFE_WORDS.length)];const s=(Math.random()>.5?(w+" "+core):(core+" "+w));if(isAvailable(s,normQ)&&!acc.includes(s))acc.push(s)}return acc}
 
-function collisionsToText(list){
-  return list.slice(0,4).map(x => `«${escapeHtml(x.name_original)}» <span class="muted small">(${x.source}${x.subsource ? ' — ' + x.subsource : ''})</span>`).join("، ");
-}
+function render(ok,explain,hits,q){const res=document.getElementById("result");const nQ=normalizeArabic(q);const tm=hits.all.filter(x=>x.source==="trademark");const rv=hits.all.filter(x=>x.source!=="trademark");document.getElementById("rsState").innerHTML=`<span class="state ${ok?'ok':'bad'}"><span class="dot ${ok?'ok':'bad'}"></span>${ok?'مؤهل':'غير مؤهل'}</span> <span class="badge">«${escapeHtml(q)}»</span>`;document.getElementById("rsExplain").textContent=explain||(ok?"لا توجد مخالفات واضحة.":"الاسم موجود/مشابه لأسماء موجودة.");document.getElementById("d1").className="dot "+(tm.length?"bad":"ok");document.getElementById("d2").className="dot "+(rv.length?"warn":"ok");document.getElementById("tmTxt").textContent=tm.length?"مسجلة":"غير مسجلة";document.getElementById("rvTxt").textContent=rv.length?"محجوزة/موجودة":"غير محجوزة";document.getElementById("tmList").innerHTML=tm.slice(0,5).map(x=>`«${escapeHtml(x.name_original)}» <span class="hint">(${escapeHtml(x.subsource||x.source)})</span>`).join("، ");document.getElementById("rvList").innerHTML=rv.slice(0,5).map(x=>`«${escapeHtml(x.name_original)}» <span class="hint">(${escapeHtml(x.subsource||x.source)})</span>`).join("، ");const alt=document.getElementById("alt");alt.innerHTML="";suggestAlternatives(q,hits.all).then(names=>{names.forEach(n=>{const a=document.createElement("span");a.className="pill";a.textContent=n;a.onclick=()=>{document.getElementById("name").value=n};alt.appendChild(a)})});res.style.display="block"}
 
-function escapeHtml(s){
-  return s.replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-}
+async function evaluate(){const q=document.getElementById("name").value||"";if(!q.trim())return;document.getElementById("result").style.display="none";document.getElementById("loading").style.display="flex";const v=validateRules(q);if(!v.ok){render(false,v.reason,{all:[]},q);document.getElementById("loading").style.display="none";return}const hits=getHits(v.normalized);const ok=hits.all.length===0;const explain=ok?"لا يوجد تطابق ظاهر في القاعدة.":"الاسم محجوز/مشابه لاسم محجوز.";render(ok,explain,hits,q);document.getElementById("loading").style.display="none"}
 
-// UI events
-el.go.addEventListener('click', evaluate);
-el.name.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') evaluate(); });
-
+document.getElementById("go").addEventListener("click",evaluate);
+document.getElementById("name").addEventListener("keydown",e=>{if(e.key==="Enter")evaluate()});
+document.getElementById("btnCfg").addEventListener("click",()=>{const el=document.getElementById("cfg");el.style.display=(el.style.display==="block"?"none":"block")});
+document.getElementById("saveKey").addEventListener("click",()=>{const v=document.getElementById("apiKey").value.trim();if(v){localStorage.setItem("OPENAI_API_KEY",v);alert("Saved")}else{localStorage.removeItem("OPENAI_API_KEY");alert("Removed")}});
 </script>
 </body>
 </html>
