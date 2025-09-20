@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>مساعد لاهنت الذكي — تقييم الاسم التجاري</title>
+<style>
+  :root{
+    --lahint:#0ea89b;
+    --ink:#222;
+    --ink-2:#555;
+    --bg:#f7f9fb;
+    --card:#ffffff;
+    --ok:#1c9c50;
+    --bad:#e23b3b;
+    --warn:#c58b00;
+    --muted:#9aa2b1;
+    --shadow:0 10px 25px rgba(0,0,0,.06);
+    --radius:14px;
+  }
+  *,*:before,*:after{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Kufi Arabic", "Cairo", "Tajawal", "Noto Sans Arabic", sans-serif;
+  }
+  .wrap{
+    max-width:1100px; margin:32px auto; padding: 20px;
+  }
+  .brand{
+    text-align:center; margin: 12px 0 24px;
+  }
+  .logo{
+    display:inline-flex; align-items:center; gap:14px; user-select:none;
+  }
+  .logo-mark{
+    width:78px; height:78px; border-radius:999px; background: radial-gradient(circle at 30% 25%, #2dd4bf, #0ea89b);
+    display:inline-grid; place-items:center; color:white; font-weight:800; font-size:26px; box-shadow: var(--shadow);
+  }
+  .logo-text{
+    font-weight:800; font-size:34px; letter-spacing:.4px; color:var(--ink);
+  }
+  .sub{ color:var(--ink-2); font-size:22px; margin-top:6px; }
+  .card{
+    background:var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px; margin-top: 8px;
+  }
+  .row{ display:flex; gap:10px; }
+  input[type=text]{
+    flex:1; padding: 16px 18px; font-size:18px; border-radius:12px; border: 1px solid #e2e8f0; outline:none;
+  }
+  input[type=text]:focus{ border-color: var(--lahint); box-shadow: 0 0 0 3px rgba(14,168,155,.12); }
+  .btn{
+    width:44px; height:44px; border-radius:999px; border:0; background:#22c55e; color:white; font-size:20px; display:grid; place-items:center;
+    cursor:pointer; box-shadow: var(--shadow);
+  }
+  .btn:disabled{ background:#b7dbc5; cursor:not-allowed; }
+  .hr{ height:1px; background:#eef2f7; margin:18px 0; }
+  .loading{
+    display:none; gap:14px; align-items:center; color:var(--ink-2);
+  }
+  .ring{
+    width:26px; height:26px; border-radius:999px; border:3px solid #94e2db; border-top-color: var(--lahint);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(-360deg); } }
+  .state{ display:inline-flex; align-items:center; gap:8px; font-weight:700; }
+  .state.ok{ color:var(--ok);}
+  .state.bad{ color:var(--bad);}
+  .badge{ background:#eaf6f3; color:var(--lahint); border-radius:666px; padding: 6px 12px; font-weight:700; font-size:13px;}
+  .muted{ color:var(--muted);}
+  .result h3{ margin:0 0 8px; font-size:22px }
+  .result p{ margin:6px 0; line-height:1.8 }
+  .bullets{ list-style: none; padding:0; margin:6px 0 0 }
+  .bullets li{ display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed #eef2f7; }
+  .dot{ width:12px; height:12px; border-radius:999px; display:inline-block }
+  .dot.ok{ background: var(--ok); }
+  .dot.bad{ background: var(--bad); }
+  .dot.warn{ background: var(--warn); }
+  .small{ font-size:13px; }
+  .footer{ color:var(--muted); font-size:13px; margin-top:14px }
+  .hint{ font-size:13px; color:var(--ink-2); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">
+        <div class="logo-mark">L</div>
+        <div class="logo-text">Lahint</div>
+      </div>
+      <div class="sub">مساعد لاهنت الذكي — تقييم الاسم التجاري</div>
+    </div>
+
+    <div class="card">
+      <label class="hint" for="name">الاسم المقترح:</label>
+      <div class="row" style="margin-top:6px">
+        <input id="name" type="text" placeholder="أدخل الاسم التجاري..." />
+        <button id="go" class="btn" title="تحقق">←</button>
+      </div>
+      <div id="loading" class="loading" style="margin-top:12px">
+        <div class="ring"></div>
+        <div>المساعد الذكي يتحقق حاليًا من الاسم...</div>
+      </div>
+      <div class="hr"></div>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <div class="footer">
+      هذا النموذج أولي للعرض والاختبار. القرار النهائي لدى الجهات الحكومية. 
+    </div>
+  </div>
+
+<script>
+// ---------- Arabic normalization like backend ----------
+function normalizeArabic(s){
+  if(!s) return "";
+  s = s.toString();
+  // remove diacritics
+  s = s.replace(/[\u0617-\u061A\u064B-\u0652\u0657-\u065F\u0670\u06D6-\u06ED]/g,"");
+  // normalize
+  s = s.replace(/[إأٱآا]/g,"ا").replace(/ة/g,"ه").replace(/ى/g,"ي").replace(/ئ/g,"ي").replace(/ؤ/g,"و").replace(/ـ/g,"");
+  // keep spaces + arabic letters + digits
+  s = s.replace(/[^0-9\u0621-\u063A\u0641-\u064A\s]/g," ");
+  // collapse spaces
+  s = s.replace(/\s+/g," ").trim();
+  return s;
+}
+// ---------- Banned / rules lists ----------
+const bannedPrefixes = ["شركة","مؤسسة","مجموعة","قابضة","مكتب","اتحاد","نقابة","جمعية"];
+const bannedTitles = ["دكتور","دكتورة","مهندس","محامي","قاضي","وزير","سعادة","معالي"];
+const bannedRoyal = ["ملك","أمير","سمو","خادم الحرمين","ولي العهد","صاحب السمو"];
+const bannedMilitary = ["لواء","فريق","عميد","عقيد","مقدم","رائد","نقيب","ملازم","جندي","حرس"];
+const bannedGov = ["وزارة","هيئة","أمانة","بلدية","نيوم","الديوان","مجلس الوزراء","الحرس"];
+const bannedPlatforms = ["توكلنا","أبشر","رؤية 2030","قوى","مدد"];
+const bannedReligion = ["الله","الرحمن","الجنة","البلد الامن","الأرض المقدسة","الارض المقدسه","الارض المقدسة","البلد الآمن","البلد الامن","قرآن","الرسول","الكعبة"];
+const bannedCountryWords = ["سعودي","سعودية","السعودي","السعودية","مكة","المدينة"];
+const bannedActivityHints = ["الطبي","الرياضي","للسياحة"];
+const bannedWords = ["رسمي","معتمد"];
+const maxWords = 3;
+
+// ---------- UI ----------
+const el = {
+  name: document.getElementById('name'),
+  go: document.getElementById('go'),
+  loading: document.getElementById('loading'),
+  result: document.getElementById('result')
+};
+
+// ---------- Dataset loading ----------
+let DATA = []; // {name_normalized, name_original, source, subsource}
+let INDEX = new Map(); // normalized -> [records]
+let FIRST_LETTER = new Map();
+
+async function loadData(){
+  try{
+    const r = await fetch('names_index.json');
+    if(!r.ok) throw new Error("fetch failed");
+    DATA = await r.json();
+  }catch(e){
+    // minimal demo data as fallback
+    DATA = [
+      {"name_normalized":"اساس","name_original":"أساس","source":"reserved_trade_name","subsource":"demo"},
+      {"name_normalized":"تابع المواسم","name_original":"تابع المواسم","source":"reserved_trade_name","subsource":"demo"},
+    ];
+  }
+  for(const rec of DATA){
+    const k = rec.name_normalized;
+    if(!INDEX.has(k)) INDEX.set(k, []);
+    INDEX.get(k).push(rec);
+    const first = k[0] || "";
+    if(!FIRST_LETTER.has(first)) FIRST_LETTER.set(first, []);
+    FIRST_LETTER.get(first).push(rec);
+  }
+}
+loadData();
+
+// ---------- Levenshtein ----------
+function levenshtein(a,b){
+  a = a || ""; b = b || "";
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = new Array(n+1);
+  for(let j=0;j<=n;j++) dp[j]=j;
+  for(let i=1;i<=m;i++){
+    let prev = i-1;
+    dp[0] = i;
+    for(let j=1;j<=n;j++){
+      const temp = dp[j];
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      dp[j] = Math.min(
+        dp[j] + 1,        // deletion
+        dp[j-1] + 1,      // insertion
+        prev + cost       // substitution
+      );
+      prev = temp;
+    }
+  }
+  return dp[n];
+}
+
+function nearDuplicate(q, candidate){
+  const L = Math.max(q.length, candidate.length);
+  const d = levenshtein(q, candidate);
+  const threshold = L <= 4 ? 1 : (L <= 7 ? 2 : 3);
+  return d <= threshold;
+}
+
+// ---------- Rules evaluation ----------
+function validateRules(name){
+  const original = name.trim();
+  const normalized = normalizeArabic(original);
+  const words = normalized ? normalized.split(/\s+/) : [];
+
+  // 1) Arabic only (after trimming)
+  if(!/^[\u0621-\u063A\u0641-\u064A\s]+$/.test(normalized)){
+    return { ok:false, reason:"الاسم يجب أن يكون بالعربية فقط دون رموز أو أرقام.", rule:"عربي فقط" };
+  }
+
+  if(words.length > maxWords){
+    return { ok:false, reason:"لا يزيد الاسم على ثلاث كلمات.", rule:"<= 3 كلمات" };
+  }
+
+  // Starts with legal entity word (e.g., "شركة")
+  for(const p of bannedPrefixes){
+    if(normalized.startsWith(p+" ")){
+      return { ok:false, reason:"يُمنع بدء الاسم بكيان قانوني مثل: "+p, rule:"البداية بكيان قانوني" };
+    }
+  }
+
+  // Titles / Ranks / Royal
+  for(const list of [bannedTitles, bannedRoyal, bannedMilitary]){
+    for(const k of list){
+      if(normalized.includes(k)){
+        return { ok:false, reason:"الاسم يحتوي كلمة محظورة: "+k, rule:"ألقاب/رتب/ملكية" };
+      }
+    }
+  }
+
+  // Government entities / platforms
+  for(const list of [bannedGov, bannedPlatforms]){
+    for(const k of list){
+      if(normalized.includes(k)){
+        return { ok:false, reason:"يحظر استخدام أسماء جهات/منصات حكومية: "+k, rule:"جهات حكومية" };
+      }
+    }
+  }
+
+  // Religion
+  for(const k of bannedReligion){
+    if(normalized.includes(k)){
+      return { ok:false, reason:"يحظر استخدام كلمات أو معانٍ دينية: "+k, rule:"محتوى ديني" };
+    }
+  }
+
+  // Country words
+  for(const k of bannedCountryWords){
+    if(normalized.includes(k)){
+      return { ok:false, reason:"يُمنع استخدام كلمة: "+k, rule:"تحديد بلد/مدينة" };
+    }
+  }
+
+  // Activity hints
+  for(const k of bannedActivityHints){
+    if(normalized.includes(k)){
+      return { ok:false, reason:"لا يتضمن الاسم مقطع يدل على نشاط تجاري: "+k, rule:"تلميح للنشاط" };
+    }
+  }
+
+  // Letters-only (no digits/specials) already enforced by normalization stage.
+  return { ok:true, reason:"" , normalized};
+}
+
+// ---------- Search ----------
+function evaluate(){
+  const q = el.name.value || "";
+  if(!q.trim()) return;
+  el.result.innerHTML = "";
+  el.loading.style.display = "inline-flex";
+  setTimeout(() => {
+    const v = validateRules(q);
+    if(!v.ok){
+      render(false, "غير متوافق", v.reason, []);
+      el.loading.style.display = "none";
+      return;
+    }
+    const norm = v.normalized;
+    // exact
+    let hits = INDEX.get(norm) || [];
+
+    // near duplicates (same first letter bucket)
+    const bucket = (FIRST_LETTER.get(norm[0]) || []);
+    const near = [];
+    for(const rec of bucket){
+      if(rec.name_normalized === norm) continue;
+      if(nearDuplicate(norm, rec.name_normalized)){
+        near.push(rec);
+      }
+    }
+
+    const allHits = [...hits, ...near];
+    if(allHits.length){
+      render(false, "غير متوافق", "الاسم محجوز/مشابه لاسم محجوز أو علامة تجارية.", summarize(allHits));
+    }else{
+      render(true, "متوافق", "لا يوجد تطابق ظاهر في قواعد البيانات المتاحة. يمكن المتابعة لحجز الاسم.", []);
+    }
+    el.loading.style.display = "none";
+  }, 420); // simulated small delay while "logo" spins :)
+}
+
+function summarize(hits){
+  // return up to 6 unique by normalized
+  const seen = new Set();
+  const items = [];
+  for(const h of hits){
+    if(seen.has(h.name_normalized)) continue;
+    seen.add(h.name_normalized);
+    items.push(h);
+    if(items.length >= 6) break;
+  }
+  return items;
+}
+
+// ---------- Render ----------
+function render(ok, title, explain, collisions){
+  const stateClass = ok ? "ok" : "bad";
+  const status = ok ? "متوافق" : "غير متوافق";
+  const collTrademarks = collisions.filter(x => x.source === "trademark");
+  const collReserved = collisions.filter(x => x.source === "reserved_trade_name");
+
+  el.result.innerHTML = `
+    <h3>نتيجة التقييم ل“<span class="badge">${escapeHtml(el.name.value.trim())}</span>”</h3>
+    <p class="state ${stateClass}"><span class="dot ${stateClass}"></span> <span>${status}</span></p>
+    <div class="small muted">تفسير النموذج:</div>
+    <p>${escapeHtml(explain)}</p>
+    <div class="small muted">نتائج التحقق من التكرار:</div>
+    <ul class="bullets">
+      <li><span class="dot ${collTrademarks.length ? 'bad' : 'ok'}"></span> العلامات التجارية: ${collTrademarks.length ? 'مسجَّلة' : 'غير مسجَّلة'}
+        ${collTrademarks.length ? '<div class="small muted">أبرز التعارضات: ' + collisionsToText(collTrademarks) + '</div>' : ''}
+      </li>
+      <li><span class="dot ${collReserved.length ? 'warn' : 'ok'}"></span> الأسماء المحجوزة: ${collReserved.length ? 'محجوزة' : 'غير محجوزة'}
+        ${collReserved.length ? '<div class="small muted">أبرز التعارضات: ' + collisionsToText(collReserved) + '</div>' : ''}
+      </li>
+    </ul>
+  `;
+}
+
+function collisionsToText(list){
+  return list.slice(0,4).map(x => `«${escapeHtml(x.name_original)}» <span class="muted small">(${x.source}${x.subsource ? ' — ' + x.subsource : ''})</span>`).join("، ");
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
+}
+
+// UI events
+el.go.addEventListener('click', evaluate);
+el.name.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') evaluate(); });
+
+</script>
+</body>
+</html>
